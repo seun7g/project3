@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"
+        integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+        <div class="container-fluid">
+            <span class="ri-arrow-left-line"></span>
+            <a class="navbar-brand" href="#">Cart</a>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <div class="row" id="product-list">
+            <!-- <div class="card h-100 shadow ">
+                <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">$${product.price}</p>
+                    <div class="d-flex justify-content-between">
+                            <button class="btn btn-danger btn-sm"> REMOVE</button>
+                            <div>
+                                <button class="btn btn-dark btn-sm mx-1"> - </button>
+                                <span>1</span>
+                                <button class="btn btn-dark btn-sm mx-1"> + </button>
+                            </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="container">
+        <h2 id=""> Total : <span id="total"></span> </h2>
+    </div>
+</body>
+<script src="Asset/js/script.js"></script>
+<script>
+    const productList = document.getElementById("product-list");
+    let url_params = new URLSearchParams(location.search)
+    let data  = url_params.get('q') ?? null
+    let products = null;
+    let cart_items = data == null ? [] : data.split(',');
+    console.log(cart_items);    
+    products =  get_products(false)
+
+    console.log(products)
+    let final_cart = [];
+    if(cart_items){
+    
+
+    cart_items.forEach(c =>{
+        products.forEach(p =>{
+            if(c == p.id){
+                p.qty = 1;
+                final_cart.push(p);
+            }
+        })
+    })
+
+    final_cart.forEach(product => {
+        const col = document.createElement("div");
+        col.className = "col-md-4 mb-4";
+        col.innerHTML = `
+                        <div class="card h-100 shadow " id='card_${product.id}'>
+                <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">$${product.price}</p>
+                    <div class="d-flex justify-content-between">
+                            <button class="btn btn-danger btn-sm" onclick="removeItem(${product.id})"> REMOVE</button>
+                            <div>
+                                <button class="btn btn-dark btn-sm mx-1" onclick='update_qty(0,${product.id})'> - </button>
+                                <span id='product_${product.id}'>1</span>
+                                <button class="btn btn-dark btn-sm mx-1" onclick='update_qty(1,${product.id})'> + </button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+    `;
+        productList.appendChild(col);
+    });
+}else{
+    productList.innerHTML = `                        
+            <div class="card h-100 shadow ">
+                <div class="card-body">
+                   <h> No Items Found </h2>
+                    <a href='./'> Back to home </a>
+            </div>
+            </div>`
+}
+    let cart = [];
+function update_qty(state, pid){
+    let qty_elt = document.querySelector('#product_'+pid);
+    let index = 0;
+    final_cart.forEach(i =>{
+        if(i.id == pid)index = final_cart.indexOf(i);
+    })
+    console.log(final_cart)
+    console.log(index )
+    let previous_qty = Number(qty_elt.innerHTML); // 1
+    let new_qty = 0; 
+    if(state == 0){
+        new_qty = previous_qty > 1  ? previous_qty - 1 : previous_qty;
+        new_qty = previous_qty > 1  ? final_cart[index].qty -=1 :final_cart[index].qty 
+        
+        
+    }else{
+        new_qty = previous_qty + 1;
+        final_cart[index].qty +=1
+
+    }
+    qty_elt.innerHTML = new_qty;
+cal_total()
+
+}
+function removeItem( pid){
+    document.getElementById("card_"+pid).remove();
+}
+
+function cal_total(){
+    let total = 0;
+    if(final_cart){
+        final_cart.forEach(i =>{
+
+            total  +=  (i.price *i.qty)
+        })
+    }
+    document.querySelector('#total').innerHTML = total;
+}
+cal_total()
+console.log(final_cart)
+</script>
+</html>

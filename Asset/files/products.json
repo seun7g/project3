@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Laptop",
+    "price": 1200,
+    "qty": 10,
+    "image": "laptop.jpg",
+    "description": "A high-performance laptop suitable for work, gaming, and everyday use.",
+    "features": [
+      "15.6-inch Full HD display",
+      "Intel Core i7 processor",
+      "16GB RAM",
+      "512GB SSD storage",
+      "Long-lasting battery life"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Smartphone",
+    "price": 800,
+    "qty": 25,
+    "image": "smartphone.jpg",
+    "description": "A sleek smartphone with powerful features and an excellent camera.",
+    "features": [
+      "6.5-inch OLED display",
+      "Triple-lens camera system",
+      "128GB internal storage",
+      "5G connectivity",
+      "Fast charging support"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Headphones",
+    "price": 150,
+    "qty": 50,
+    "image": "headphones.jpg",
+    "description": "Comfortable over-ear headphones with immersive sound quality.",
+    "features": [
+      "Noise cancellation",
+      "Bluetooth connectivity",
+      "20-hour battery life",
+      "Built-in microphone",
+      "Lightweight design"
+    ]
+  }
+]
