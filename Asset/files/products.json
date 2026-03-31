@@ -1,47 +1,153 @@
 [
   {
     "id": 1,
-    "name": "Laptop",
-    "price": 1200,
-    "qty": 10,
-    "image": "laptop.jpg",
-    "description": "A high-performance laptop suitable for work, gaming, and everyday use.",
-    "features": [
-      "15.6-inch Full HD display",
-      "Intel Core i7 processor",
-      "16GB RAM",
-      "512GB SSD storage",
-      "Long-lasting battery life"
-    ]
+    "name": "UltraBook Pro X",
+    "price": 1299,
+    "oldPrice": 1599,
+    "image": "https://picsum.photos/id/0/400/300",
+    "category": "laptops",
+    "discount": 18,
+    "hot": true
   },
   {
     "id": 2,
-    "name": "Smartphone",
-    "price": 800,
-    "qty": 25,
-    "image": "smartphone.jpg",
-    "description": "A sleek smartphone with powerful features and an excellent camera.",
-    "features": [
-      "6.5-inch OLED display",
-      "Triple-lens camera system",
-      "128GB internal storage",
-      "5G connectivity",
-      "Fast charging support"
-    ]
+    "name": "Galaxy S24 Ultra",
+    "price": 999,
+    "oldPrice": 1199,
+    "image": "https://picsum.photos/id/1/400/300",
+    "category": "phones",
+    "discount": 16,
+    "hot": true
   },
   {
     "id": 3,
-    "name": "Headphones",
-    "price": 150,
-    "qty": 50,
-    "image": "headphones.jpg",
-    "description": "Comfortable over-ear headphones with immersive sound quality.",
-    "features": [
-      "Noise cancellation",
-      "Bluetooth connectivity",
-      "20-hour battery life",
-      "Built-in microphone",
-      "Lightweight design"
-    ]
+    "name": "SonicBass Pro",
+    "price": 129,
+    "oldPrice": 199,
+    "image": "https://picsum.photos/id/20/400/300",
+    "category": "accessories",
+    "discount": 35,
+    "hot": false
+  },
+  {
+    "id": 4,
+    "name": "4K Quantum TV",
+    "price": 749,
+    "oldPrice": 999,
+    "image": "https://picsum.photos/id/119/400/300",
+    "category": "electronics",
+    "discount": 25,
+    "hot": true
+  },
+  {
+    "id": 5,
+    "name": "Urban Hoodie",
+    "price": 49,
+    "oldPrice": 69,
+    "image": "https://picsum.photos/id/26/400/300",
+    "category": "fashion",
+    "discount": 29,
+    "hot": false
+  },
+  {
+    "id": 6,
+    "name": "Mechanical Keyboard",
+    "price": 89,
+    "oldPrice": 120,
+    "image": "https://picsum.photos/id/96/400/300",
+    "category": "accessories",
+    "discount": 26,
+    "hot": true
+  },
+  {
+    "id": 7,
+    "name": "AirPods Max Style",
+    "price": 249,
+    "oldPrice": 349,
+    "image": "https://picsum.photos/id/1/400/300",
+    "category": "accessories",
+    "discount": 28,
+    "hot": false
+  },
+  {
+    "id": 8,
+    "name": "Gaming Laptop Xtreme",
+    "price": 1599,
+    "oldPrice": 1999,
+    "image": "https://picsum.photos/id/42/400/300",
+    "category": "laptops",
+    "discount": 20,
+    "hot": true
+  },
+  {
+    "id": 9,
+    "name": "Smart Watch Elite",
+    "price": 199,
+    "oldPrice": 299,
+    "image": "https://picsum.photos/id/82/400/300",
+    "category": "electronics",
+    "discount": 33,
+    "hot": false
+  },
+  {
+    "id": 10,
+    "name": "Designer Sneakers",
+    "price": 89,
+    "oldPrice": 129,
+    "image": "https://picsum.photos/id/15/400/300",
+    "category": "fashion",
+    "discount": 31,
+    "hot": true
+  },
+  {
+    "id": 11,
+    "name": "Noise Cancelling Headphones",
+    "price": 199,
+    "oldPrice": 299,
+    "image": "https://picsum.photos/id/10/400/300",
+    "category": "accessories",
+    "discount": 33,
+    "hot": true
+  },
+  {
+    "id": 12,
+    "name": "4K Action Camera",
+    "price": 149,
+    "oldPrice": 249,
+    "image": "https://picsum.photos/id/30/400/300",
+    "category": "electronics",
+    "discount": 40,
+    "hot": false
+  },
+
+  {
+    "id": 13,
+    "name": "Wireless Charging Pad",
+    "price": 29,
+    "oldPrice": 49,
+    "image": "https://picsum.photos/id/50/400/300",
+    "category": "accessories",
+    "discount": 41,
+    "hot": false
+  },
+  {
+    "id": 14,
+    "name": "Smartphone G Pro",
+    "price": 899,
+    "oldPrice": 1099,
+    "image": "https://picsum.photos/id/60/400/300",
+    "category": "phones",
+    "discount": 18,
+    "hot": true
+  },
+  {
+    "id": 15,
+    "name": "Fitness Tracker Plus",
+    "price": 79,
+    "oldPrice": 129,
+    "image": "https://picsum.photos/id/70/400/300",
+    "category": "electronics",
+    "discount": 38,
+    "hot": false
   }
 ]
