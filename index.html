@@ -390,6 +390,443 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // ==================== PRODUCT DATA VIA AJAX ====================
+    let products = [];
+    let cart = [];
+    let activeCategory = "all";
+    let searchQuery = "";
+    let isLoading = false;
+    let loadError = false;
 
+    // Categories mapping (dynamic from JSON)
+    let categoriesList = [
+        { key: "all", label: "✨ All Products", icon: "ri-apps-line" }
+    ];
+
+    // DOM elements
+    const productContainer = document.getElementById("product-list");
+    const cartCountSpan = document.getElementById("cart-count");
+    const categoryListDiv = document.getElementById("category-list");
+    const mobileToggleBtn = document.getElementById("mobileToggleSidebarBtn");
+    const closeSidebarMobile = document.getElementById("closeSidebarMobile");
+    const sidebarContainer = document.getElementById("sidebarContainer");
+
+    // ==================== AJAX FUNCTION ====================
+    async function loadProductsFromJSON() {
+        try {
+            isLoading = true;
+            loadError = false;
+            
+            // Show loading state
+            if (productContainer) {
+                productContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading amazing products...</p>
+                    </div>
+                `;
+            }
+            
+            const response = await fetch('Asset/files/products.json');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('✅ AJAX Success:', data.length, 'products loaded');
+            
+            if (Array.isArray(data) && data.length > 0) {
+                products = data;
+                console.log(`✅ Loaded ${products.length} products from products.json`);
+                
+                // Build categories first
+                buildCategoriesFromProducts();
+                
+                // Then render products (this will set isLoading to false and display products)
+                isLoading = false;
+                renderProducts();
+            } else {
+                throw new Error('Invalid or empty JSON data');
+            }
+        } catch (error) {
+            console.error('❌ AJAX Error loading products:', error);
+            loadError = true;
+            isLoading = false;
+            
+            // Show error message
+            if (productContainer) {
+                productContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="ri-error-warning-line fs-1 text-danger"></i>
+                        <h5 class="mt-3">Failed to Load Products</h5>
+                        <p class="text-muted">${error.message}</p>
+                        <button class="btn btn-primary mt-2 rounded-pill" onclick="loadProductsFromJSON()">
+                            <i class="ri-refresh-line"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // ==================== BUILD CATEGORIES DYNAMICALLY ====================
+    function buildCategoriesFromProducts() {
+        // Extract unique categories from products
+        const uniqueCategories = [...new Set(products.map(p => p.category).filter(c => c))];
+        
+        // Category icons mapping
+        const categoryIcons = {
+            'phones': 'ri-smartphone-line',
+            'laptops': 'ri-laptop-line',
+            'accessories': 'ri-headphone-line',
+            'electronics': 'ri-tv-line',
+            'fashion': 'ri-shirt-line'
+        };
+        
+        // Build categories list
+        categoriesList = [{ key: "all", label: "✨ All Products", icon: "ri-apps-line" }];
+        
+        uniqueCategories.forEach(cat => {
+            const icon = categoryIcons[cat] || 'ri-price-tag-3-line';
+            const label = getCategoryLabel(cat);
+            categoriesList.push({ key: cat, label: label, icon: icon });
+        });
+        
+        // Re-render categories sidebar
+        renderCategories();
+    }
+    
+    // Helper function to get formatted category label with emoji
+    function getCategoryLabel(category) {
+        const labels = {
+            'phones': '📱 Phones',
+            'laptops': '💻 Laptops',
+            'accessories': '🎧 Accessories',
+            'electronics': '📺 Electronics',
+            'fashion': '👕 Fashion'
+        };
+        return labels[category] || `📦 ${category.charAt(0).toUpperCase() + category.slice(1)}`;
+    }
+
+    // ==================== CART FUNCTIONS ====================
+    function updateCartUI() {
+        if (cartCountSpan) {
+            cartCountSpan.innerText = cart.length;
+        }
+    }
+
+    window.add_to_cart = function(productId) {
+        if (loadError || !products.length) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Products Not Loaded',
+                text: 'Please wait for products to load or click retry.',
+                timer: 2000,
+                showConfirmButton: true
+            });
+            return;
+        }
+        
+        const product = products.find(p => p.id === productId);
+        if (!product) {
+            console.error('Product not found:', productId);
+            return;
+        }
+        
+        if (!cart.includes(productId)) {
+            cart.push(productId);
+            updateCartUI();
+            const toastEl = document.getElementById("toastMsg");
+            if (toastEl) {
+                toastEl.style.opacity = "1";
+                toastEl.innerText = `🛍️ ${product.name} added to cart`;
+                setTimeout(() => { toastEl.style.opacity = "0"; }, 1800);
+            }
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Already in cart',
+                text: `${product.name} is already in your cart!`,
+                toast: true,
+                timer: 1500,
+                showConfirmButton: false,
+                position: 'top-end'
+            });
+        }
+    };
+
+    // ==================== FILTER FUNCTIONS ====================
+    function getFilteredProducts() {
+        if (!products.length) return [];
+        
+        let filtered = [...products];
+        
+        // Apply category filter
+        if (activeCategory !== "all") {
+            filtered = filtered.filter(p => p.category === activeCategory);
+        }
+        
+        // Apply search filter
+        if (searchQuery.trim() !== "") {
+            const lowerQuery = searchQuery.toLowerCase();
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(lowerQuery) ||
+                (p.category && p.category.toLowerCase().includes(lowerQuery))
+            );
+        }
+        
+        return filtered;
+    }
+
+    // ==================== RENDER PRODUCTS ====================
+    function renderProducts() {
+        if (!productContainer) return;
+        
+        // Handle loading state
+        if (isLoading) {
+            productContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading amazing products...</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Handle error state
+        if (loadError) {
+            return; // Error already displayed in loadProductsFromJSON
+        }
+        
+        // Handle empty products
+        if (!products.length) {
+            productContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="ri-inbox-line fs-1 text-muted"></i>
+                    <h5 class="mt-3">No Products Available</h5>
+                    <p class="text-muted">The product catalog is currently empty.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const filtered = getFilteredProducts();
+        
+        if (filtered.length === 0) {
+            productContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="ri-emotion-sad-line fs-1 text-muted"></i>
+                    <h5 class="mt-3">No products found</h5>
+                    <p class="text-muted">Try adjusting your search or category filter</p>
+                    <button class="btn btn-outline-dark mt-2 rounded-pill" onclick="resetFilters()">
+                        <i class="ri-refresh-line"></i> Reset filters
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        productContainer.innerHTML = filtered.map(product => {
+            const discountPercent = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+            const hasDiscount = product.oldPrice && product.price < product.oldPrice;
+            const hotBadge = product.hot ? '<span class="badge-sale"><i class="ri-flash-fill"></i> HOT</span>' : (hasDiscount ? `<span class="badge-sale">-${discountPercent}%</span>` : '');
+            
+            return `
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card">
+                        <div class="product-img-wrapper">
+                            ${hotBadge}
+                            <img src="${product.image}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='https://placehold.co/400x300?text=Image+Not+Found'">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-title">${escapeHtml(product.name)}</div>
+                            <div class="text-muted small mb-1">${escapeHtml(getCategoryLabel(product.category))}</div>
+                            <div class="d-flex align-items-baseline">
+                                <span class="price">$${product.price}</span>
+                                ${product.oldPrice ? `<span class="old-price">$${product.oldPrice}</span>` : ''}
+                            </div>
+                            <button class="btn btn-add text-white w-100 mt-3 rounded-pill" onclick="add_to_cart(${product.id})">
+                                <i class="ri-shopping-cart-line"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Helper function to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // ==================== RENDER CATEGORIES ====================
+    function renderCategories() {
+        if (!categoryListDiv) return;
+        
+        categoryListDiv.innerHTML = categoriesList.map(cat => `
+            <div class="category-item ${activeCategory === cat.key ? 'category-active' : ''}" data-cat="${cat.key}">
+                <i class="${cat.icon}"></i> <span>${cat.label}</span>
+            </div>
+        `).join('');
+        
+        // Attach event listeners
+        document.querySelectorAll('.category-item').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const catKey = el.getAttribute('data-cat');
+                if (catKey) {
+                    activeCategory = catKey;
+                    renderCategories();
+                    renderProducts();
+                    
+                    // Auto close sidebar on mobile
+                    if (window.innerWidth < 768 && sidebarContainer) {
+                        sidebarContainer.classList.add('sidebar-closed');
+                    }
+                }
+            });
+        });
+    }
+
+    // ==================== SEARCH FUNCTIONS ====================
+    window.searchProducts = function() {
+        const inputVal = document.getElementById("search-input")?.value || '';
+        searchQuery = inputVal;
+        renderProducts();
+    };
+
+    window.searchProductsByText = function(text) {
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+            searchInput.value = text;
+        }
+        searchQuery = text;
+        renderProducts();
+    };
+
+    window.resetFilters = function() {
+        activeCategory = "all";
+        searchQuery = "";
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+            searchInput.value = "";
+        }
+        renderCategories();
+        renderProducts();
+    };
+
+    // ==================== CART PAGE / CHECKOUT ====================
+window.go_to_cart = function() {
+    if (loadError) {
+        Swal.fire("Error", "Products not loaded. Please try again.", "error");
+        return;
+    }
+    
+    if (cart.length === 0) {
+        Swal.fire("Empty Cart", "Add some awesome products first!", "info");
+        return;
+    }
+    
+    // Encode cart items as URL parameter
+    const cartParam = encodeURIComponent(JSON.stringify(cart));
+    
+    // Redirect to checkout page with cart data
+    window.location.href = `carot.html?cart=${cartParam}`;
+};
+    // ==================== INITIALIZE SWIPER ====================
+    function initSwiper() {
+        if (typeof Swiper !== 'undefined' && document.querySelector('.hero-swiper')) {
+            new Swiper('.hero-swiper', {
+                loop: true,
+                autoplay: { delay: 4000, disableOnInteraction: false },
+                pagination: { el: '.swiper-pagination', clickable: true },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                effect: 'slide',
+                speed: 700
+            });
+        }
+    }
+
+    // ==================== MOBILE SIDEBAR HANDLERS ====================
+    function initMobileSidebar() {
+        if (mobileToggleBtn) {
+            mobileToggleBtn.addEventListener('click', () => {
+                if (sidebarContainer) {
+                    sidebarContainer.classList.toggle('sidebar-closed');
+                }
+            });
+        }
+        
+        if (closeSidebarMobile) {
+            closeSidebarMobile.addEventListener('click', () => {
+                if (sidebarContainer) {
+                    sidebarContainer.classList.add('sidebar-closed');
+                }
+            });
+        }
+        
+        // Initial state
+        if (window.innerWidth < 768 && sidebarContainer) {
+            sidebarContainer.classList.add('sidebar-closed');
+        } else if (sidebarContainer) {
+            sidebarContainer.classList.remove('sidebar-closed');
+        }
+        
+        window.addEventListener('resize', () => {
+            if (sidebarContainer) {
+                if (window.innerWidth >= 768) {
+                    sidebarContainer.classList.remove('sidebar-closed');
+                } else if (!sidebarContainer.classList.contains('sidebar-closed')) {
+                    sidebarContainer.classList.add('sidebar-closed');
+                }
+            }
+        });
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    function setupEventListeners() {
+        // Search input enter key
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+            searchInput.addEventListener("keyup", (e) => {
+                if (e.key === "Enter") searchProducts();
+            });
+        }
+    }
+
+    // ==================== INITIALIZE APP ====================
+    function init() {
+        console.log('🚀 Initializing FusionStore...');
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Initialize UI components
+        initMobileSidebar();
+        initSwiper();
+        
+        // Fetch products via AJAX
+        loadProductsFromJSON();
+    }
+
+    // Start the application when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
 </body>
 </html>
