@@ -168,7 +168,7 @@
                 justify-content: space-between;
                 align-items: center;
                 flex-wrap: wrap;
-                background: black;
+                background: rgb(207, 205, 205);
                 padding: 12px 24px;
                 border-radius: 28px;
                 margin-bottom: 32px;
@@ -180,7 +180,7 @@
                 font-size: 1.6rem;
                 font-weight: 600;
                 margin: 0;
-                color: white;
+                color: #0f172a;
                 letter-spacing: -0.3px;
             }
 
@@ -357,6 +357,161 @@
                 font-size: 0.9rem;
                 color: #1e293b;
             }
+
+            .backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                opacity: 0;
+                pointer-events: none;
+                transition: 0.3s ease;
+                z-index: 90;
+            }
+
+            .backdrop.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            select option {
+                font-size: 0.8rem;
+            }
+
+            @media (max-width: 900px) {
+                .dashboard-sidebar {
+                    transform: translateX(-100%);
+                    position: fixed;
+                    transition: transform 0.3s ease;
+                }
+
+                .dashboard-sidebar.active {
+                    transform: translateX(0);
+                }
+
+                .main-content {
+                    margin-left: 0;
+                }
+            }
+
+            @media (max-width: 900px) {
+
+                .top-navbar {
+                    flex-direction: row;
+                    justify-content: space-between;
+                    gap: 10px;
+                    padding: 12px 16px;
+                }
+
+                .page-title h1 {
+                    font-size: 1.2rem;
+                }
+
+                .page-title p {
+                    font-size: 0.75rem;
+                }
+
+                .dashboard-sections {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                }
+
+                table {
+                    font-size: 0.8rem;
+                }
+
+                th,
+                td {
+                    padding: 8px;
+                }
+
+                .search-bar {
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 100%;
+                }
+
+                .search-bar input {
+                    width: 100%;
+                }
+
+                select {
+                    width: 100%;
+                }
+            }
+
+            .dashboard-sidebar {
+                transition: transform 0.3s ease;
+            }
+
+            @media (max-width: 900px) {
+                .dashboard-sidebar {
+                    transform: translateX(-100%);
+                }
+
+                .dashboard-sidebar.active {
+                    transform: translateX(0);
+                }
+            }
+
+            @media (max-width: 600px) {
+                table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .btn {
+                    padding: 4px 8px;
+                    font-size: 0.7rem;
+                }
+            }
+
+            @media (max-width: 900px) {
+
+                select {
+                    width: 100%;
+                    max-width: 250px;
+                    /* prevents it from stretching too wide */
+                    font-size: 0.8rem;
+                    padding: 6px 10px;
+                }
+
+            }
+
+            @media (max-width: 900px) {
+
+                .dashboard-sections>div:last-child {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    align-items: flex-start;
+                }
+
+            }
+
+            @media (max-width: 900px) {
+
+                .btn {
+                    font-size: 0.75rem;
+                    padding: 6px 10px;
+                }
+
+            }
+
+            @media (max-width: 900px) {
+
+                .dashboard-sections>div:last-child {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    align-items: center;
+                }
+
+                select {
+                    flex: 1;
+                }
+
+            }
         </style>
     </head>
 
@@ -373,7 +528,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="active">
-                    <a href="#">
+                    <a href="dashboard.html">
                         <i class="ri-dashboard-line"></i>
                         <span>Dashboard</span>
                     </a>
@@ -385,27 +540,15 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="ri-bar-chart-2-line"></i>
-                        <span>Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
+                    <a href="products.html">
                         <i class="ri-bar-chart-2-line"></i>
                         <span>Products</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="users.html">
                         <i class="ri-user-3-line"></i>
                         <span>Customers</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="ri-coupon-line"></i>
-                        <span>Discounts</span>
                     </a>
                 </li>
                 <li>
@@ -422,12 +565,16 @@
                 </div>
             </div>
         </aside>
+        <div class="backdrop"></div>
 
         <!-- MAIN CONTENT -->
         <main class="main-content">
             <!-- top bar with greeting & date -->
             <div class="top-navbar">
                 <div class="page-title">
+                    <button id="menuToggle" class="btn-ghost">
+                        <i class="ri-menu-line"></i>
+                    </button>
                     <h1>Orders</h1>
                     <p>Manage your orders</p>
                 </div>
@@ -520,61 +667,111 @@
                 <tbody id="orderTable"></tbody>
             </table>
             <script>
-                fetch("orders.json")
-  .then(response => response.json())
-  .then(data => {
-    const table = document.getElementById("orderTable");
+                // const sidebar = document.querySelector(".dashboard-sidebar");
+                // const toggleBtn = document.getElementById("menuToggle");
 
-    data.forEach(order => {
-      const row = `
-        <tr>
-          <td>#${order.orderId}</td>
-          <td>${order.date}</td>
-          <td>$${order.total}</td>
-          <td>${order.status}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-primary">View</button>
-            <button class="btn btn-sm btn-outline-danger">Delete</button>
-          </td>
-        </tr>
-      `;
+                // toggleBtn.addEventListener("click", () => {
+                //     sidebar.classList.toggle("active");
+                // });
 
-      table.innerHTML += row;
-    });
-  });
-                // // Sample order data
-                // const orders = [
-                //     { id: '#15', date: '2026-10-01', total: '$150.00', status: 'Pending' },
-                //     { id: '#16', date: '2026-10-02', total: '$200.00', status: 'Shipped' },
-                //     { id: '#17', date: '2026-10-03', total: '$250.00', status: 'Delivered' },
-                //     { id: '#18', date: '2026-10-04', total: '$300.00', status: 'Cancelled' },
-                // ];
+                // document.addEventListener("click", (e) => {
+                //     if (
+                //         !sidebar.contains(e.target) &&
+                //         !toggleBtn.contains(e.target)
+                //     ) {
+                //         sidebar.classList.remove("active");
+                //     }
+                // });
+                const sidebar = document.querySelector(".dashboard-sidebar");
+                const toggleBtn = document.getElementById("menuToggle");
+                const backdrop = document.querySelector(".backdrop");
 
-                // const orderTable = document.getElementById('orderTable');
+                toggleBtn.addEventListener("click", () => {
+                    sidebar.classList.toggle("active");
+                    backdrop.classList.toggle("active");
+                });
 
-                // // Function to render orders in the table
-                // function renderOrders() {
-                //     orderTable.innerHTML = '';
-                //     orders.forEach(order => {
-                //         const row = document.createElement('tr');
-                //         row.innerHTML = `
-                //             <td>${order.id}</td>
-                //             <td>${order.date}</td>
-                //             <td>${order.total}</td>
-                //             <td>${order.status}</td>
-                //             <td>
-                //                 <button class="btn btn-sm btn-outline-primary">View</button>
-                //                 <button class="btn btn-sm btn-outline-danger">Delete</button>
-                //             </td>
-                //         `;
-                //         orderTable.appendChild(row);
-                //     });
-                // }
+                backdrop.addEventListener("click", () => {
+                    sidebar.classList.remove("active");
+                    backdrop.classList.remove("active");
+                });
 
-                // // Initial render
-                // renderOrders();
+                async function fetchOrders() {
+                    try {
+                        const res = await fetch("../Asset/files/orders.json");
+                        const data = await res.json();
+                        return data;
+                    } catch (error) {
+                        console.error("Failed to load orders:", error);
+                        return [];
+                    }
+                }
+                function renderOrders(orders) {
+                    const table = document.getElementById("orderTable");
+                    table.innerHTML = "";
+
+                    orders.forEach(order => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+            <td>#${order.orderId}</td>
+            <td>${order.date}</td>
+            <td>$${order.total}</td>
+            <td>${order.status}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewOrder('${order.orderId}')">View</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.orderId}')">Delete</button>
+            </td>
+        `;
+                        table.appendChild(row);
+                    });
+                }
+                async function loadOrders() {
+                    const orders = await fetchOrders();
+                    renderOrders(orders);
+                }
+                loadOrders();
+                async function searchOrders(keyword) {
+                    const orders = await fetchOrders();
+
+                    const filtered = orders.filter(order =>
+                        order.orderId.toString().includes(keyword) ||
+                        order.date.toLowerCase().includes(keyword.toLowerCase()) ||
+                        order.status.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                    renderOrders(filtered);
+                }
+                document.querySelector(".search-bar input").addEventListener("input", (e) => {
+                    searchOrders(e.target.value);
+                });
+                async function filterOrders(type, value) {
+                    const orders = await fetchOrders();
+
+                    let filtered = orders;
+
+                    if (type === "status") {
+                        filtered = orders.filter(o => o.status === value);
+                    }
+
+                    if (type === "date") {
+                        filtered = orders.filter(o => o.date === value);
+                    }
+
+                    renderOrders(filtered);
+                }
+                document.querySelector("button").addEventListener("click", () => {
+                    const type = document.getElementById("category").value;
+                    const value = document.querySelector(".search-bar input").value;
+
+                    filterOrders(type, value);
+                });
+                function viewOrder(id) {
+                    alert("Viewing order: " + id);
+                }
+                function deleteOrder(id) {
+                    alert("Deleting order: " + id);
+                }
             </script>
-            </div>
     </body>
 
     </html>

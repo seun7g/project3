@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title> Admin Dashboard</title>
     <!-- Google Fonts + Remix Icons + Bootstrap (light use) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css" integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"
+        integrity="sha512-kJlvECunwXftkPwyvHbclArO8wszgBGisiLeuDFwNM8ws+wKIw0sv1os3ClWZOcrEB2eRXULYUsm8OVRGJKwGA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
         * {
             margin: 0;
@@ -26,9 +32,11 @@
         ::-webkit-scrollbar {
             width: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: #e9eef3;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 8px;
@@ -47,7 +55,11 @@
             transition: all 0.2s ease;
             overflow-y: auto;
             padding: 28px 0 32px 0;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.01), 4px 0 12px rgba(0,0,0,0.02);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.01), 4px 0 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .dashboard-sidebar.active {
+            transform: translateX(0);
         }
 
         /* brand area */
@@ -56,6 +68,7 @@
             border-bottom: 1px solid #f0f2f5;
             margin-bottom: 24px;
         }
+
         .logo {
             display: flex;
             align-items: center;
@@ -65,6 +78,7 @@
             letter-spacing: -0.3px;
             color: #0f172a;
         }
+
         .logo i {
             font-size: 1.8rem;
             color: #3b82f6;
@@ -72,12 +86,14 @@
             padding: 6px;
             border-radius: 14px;
         }
+
         .logo span {
             background: linear-gradient(135deg, #1e293b 0%, #2d3a4e 100%);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
+
         .brand-desc {
             font-size: 0.7rem;
             color: #5b6e8c;
@@ -90,9 +106,11 @@
             list-style: none;
             padding: 0 16px;
         }
+
         .sidebar-nav li {
             margin-bottom: 6px;
         }
+
         .sidebar-nav li a {
             display: flex;
             align-items: center;
@@ -105,23 +123,28 @@
             transition: all 0.2s;
             text-decoration: none;
         }
+
         .sidebar-nav li a i {
             font-size: 1.25rem;
             width: 24px;
             color: #6c7a91;
             transition: color 0.2s;
         }
+
         .sidebar-nav li.active a {
             background: #eff6ff;
             color: #1e40af;
         }
+
         .sidebar-nav li.active a i {
             color: #3b82f6;
         }
+
         .sidebar-nav li:not(.active) a:hover {
             background: #f8fafc;
             color: #0f172a;
         }
+
         .sidebar-nav li:not(.active) a:hover i {
             color: #3b82f6;
         }
@@ -139,13 +162,14 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            background: #ffffff;
+            background: rgb(207, 205, 205);
             padding: 12px 24px;
             border-radius: 28px;
             margin-bottom: 32px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 1px 1px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 1px rgba(0, 0, 0, 0.02);
             border: 1px solid #edf2f7;
         }
+
         .page-title h1 {
             font-size: 1.6rem;
             font-weight: 600;
@@ -153,16 +177,19 @@
             color: #0f172a;
             letter-spacing: -0.3px;
         }
+
         .page-title p {
             margin: 0;
             font-size: 0.85rem;
             color: #5b6e8c;
         }
+
         .admin-actions {
             display: flex;
             gap: 18px;
             align-items: center;
         }
+
         .notification-badge {
             background: #f1f5f9;
             padding: 8px 12px;
@@ -174,6 +201,7 @@
             gap: 8px;
             cursor: default;
         }
+
         .avatar-placeholder {
             width: 42px;
             height: 42px;
@@ -193,25 +221,29 @@
             gap: 24px;
             margin-bottom: 40px;
         }
+
         .stat-card {
             background: #ffffff;
             border-radius: 28px;
             padding: 22px 24px;
             transition: all 0.2s ease;
             border: 1px solid #edf2f9;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         }
+
         .stat-card:hover {
             transform: translateY(-2px);
             border-color: #e2e8f0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.02);
         }
+
         .stat-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 14px;
         }
+
         .stat-header span:first-child {
             font-size: 0.85rem;
             font-weight: 500;
@@ -219,10 +251,12 @@
             letter-spacing: 0.5px;
             color: #5b6e8c;
         }
+
         .stat-icon {
             font-size: 1.6rem;
             color: #94a3b8;
         }
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
@@ -230,6 +264,7 @@
             line-height: 1.2;
             margin-bottom: 8px;
         }
+
         .stat-trend {
             font-size: 0.8rem;
             display: flex;
@@ -237,8 +272,23 @@
             gap: 6px;
             color: #4b5563;
         }
-        .trend-up { color: #10b981; background: #e9f9ef; padding: 2px 8px; border-radius: 30px; display: inline-flex; align-items: center; gap: 4px; }
-        .trend-neutral { color: #6c7a91; background: #f1f5f9; padding: 2px 8px; border-radius: 30px; }
+
+        .trend-up {
+            color: #10b981;
+            background: #e9f9ef;
+            padding: 2px 8px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-neutral {
+            color: #6c7a91;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
 
         /* recent orders + activity section */
         .dashboard-sections {
@@ -247,13 +297,15 @@
             gap: 28px;
             margin-top: 12px;
         }
+
         .card-modern {
             background: #ffffff;
             border-radius: 28px;
             border: 1px solid #edf2f9;
             padding: 20px 24px 24px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
         }
+
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -261,18 +313,21 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+
         .card-header h3 {
             font-weight: 600;
             font-size: 1.2rem;
             margin: 0;
             color: #0f172a;
         }
+
         .badge-link {
             font-size: 0.8rem;
             color: #3b82f6;
             font-weight: 500;
             text-decoration: none;
         }
+
         .order-item {
             display: flex;
             justify-content: space-between;
@@ -280,25 +335,31 @@
             padding: 14px 0;
             border-bottom: 1px solid #f0f2f6;
         }
+
         .order-item:last-child {
             border-bottom: none;
         }
+
         .order-info {
             display: flex;
             flex-direction: column;
         }
+
         .order-id {
             font-weight: 600;
             font-size: 0.9rem;
         }
+
         .order-date {
             font-size: 0.7rem;
             color: #7e8b9e;
         }
+
         .order-amount {
             font-weight: 700;
             color: #0f172a;
         }
+
         .status-badge {
             background: #eaf9ed;
             color: #15803d;
@@ -307,10 +368,12 @@
             padding: 4px 10px;
             border-radius: 30px;
         }
+
         .status-pending {
             background: #fff3e3;
             color: #b45309;
         }
+
         .activity-item {
             display: flex;
             gap: 14px;
@@ -318,6 +381,7 @@
             border-bottom: 1px solid #f0f2f6;
             align-items: flex-start;
         }
+
         .activity-icon {
             background: #f8fafc;
             border-radius: 40px;
@@ -328,31 +392,53 @@
             justify-content: center;
             color: #3b82f6;
         }
+
         .activity-text {
             font-size: 0.85rem;
             color: #2c3e50;
         }
+
         .activity-time {
             font-size: 0.7rem;
             color: #8b9ab0;
             margin-top: 4px;
         }
+        .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+.backdrop.active {
+    opacity: 1;
+    pointer-events: all;
+}
 
         /* responsive */
         @media (max-width: 900px) {
             .dashboard-sidebar {
                 transform: translateX(-100%);
                 width: 260px;
-                box-shadow: 2px 0 12px rgba(0,0,0,0.05);
+                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
             }
+
             .main-content {
                 margin-left: 0;
                 padding: 20px;
             }
+
             .dashboard-sections {
                 grid-template-columns: 1fr;
                 gap: 24px;
             }
+
             /* we keep sidebar hidden by default, but for this demo we keep it visible on desktop.
                but for small screens, we would need a toggle — but i'll keep sidebar visible on >900px only */
         }
@@ -368,15 +454,18 @@
             font-size: 0.7rem;
             color: #6f7d95;
         }
+
         hr {
             background: #ecf3fa;
         }
+
         .btn-ghost {
             background: transparent;
             border: none;
         }
     </style>
 </head>
+
 <body>
 
     <!-- SIDEBAR - clean human e-commerce dashboard -->
@@ -400,7 +489,7 @@
                     <i class="ri-shopping-bag-line"></i>
                     <span>Orders</span>
                 </a>
-            </li> 
+            </li>
             <li>
                 <a href="products.html">
                     <i class="ri-shopping-bag-line"></i>
@@ -428,18 +517,23 @@
         </div>
     </aside>
 
+    <div class="backdrop"></div>
+
     <!-- MAIN CONTENT -->
     <main class="main-content">
         <!-- top bar with greeting & date -->
         <div class="top-navbar">
             <div class="page-title">
+                <button id="menuToggle" class="btn-ghost">
+                    <i class="ri-menu-line"></i>
+                </button>
                 <h1>Account Analytics</h1>
                 <p>Here's what's happening with your store today.</p>
             </div>
             <div class="admin-actions">
                 <div class="notification-badge">
                     <i class="ri-calendar-line"></i>
-                    <span>Apr 14, 2026</span>
+                    <span id="currentDate"></span>
                 </div>
                 <div class="avatar-placeholder">
                     <i class="ri-user-line"></i>
@@ -454,7 +548,7 @@
                     <span>Total revenue</span>
                     <i class="ri-money-dollar-circle-line stat-icon"></i>
                 </div>
-                <div class="stat-number">$48,293</div>
+                <div class="stat-number" id="revenue"></div>
                 <div class="stat-trend">
                     <span class="trend-up"><i class="ri-arrow-up-line"></i> +12.5%</span>
                     <span class="text-muted-small">vs last month</span>
@@ -465,7 +559,7 @@
                     <span>Orders</span>
                     <i class="ri-shopping-cart-line stat-icon"></i>
                 </div>
-                <div class="stat-number">1,892</div>
+                <div class="stat-number" id="orders"></div>
                 <div class="stat-trend">
                     <span class="trend-up"><i class="ri-arrow-up-line"></i> +8.2%</span>
                     <span class="text-muted-small">this quarter</span>
@@ -476,7 +570,7 @@
                     <span>Customers</span>
                     <i class="ri-group-line stat-icon"></i>
                 </div>
-                <div class="stat-number">4,312</div>
+                <div class="stat-number" id="customers"></div>
                 <div class="stat-trend">
                     <span class="trend-up"><i class="ri-user-add-line"></i> +342 new</span>
                     <span class="text-muted-small">last 30d</span>
@@ -487,7 +581,7 @@
                     <span>Conversion</span>
                     <i class="ri-line-chart-line stat-icon"></i>
                 </div>
-                <div class="stat-number">3.24%</div>
+                <div class="stat-number" id="conversion"></div>
                 <div class="stat-trend">
                     <span class="trend-neutral">⇢ +0.8%</span>
                     <span class="text-muted-small">from 2.44%</span>
@@ -503,95 +597,63 @@
                     <h3><i class="ri-receipt-line" style="margin-right: 8px;"></i> Recent orders</h3>
                     <a href="#" class="badge-link">View all <i class="ri-arrow-right-s-line"></i></a>
                 </div>
-                <div>
-                    <div class="order-item">
-                        <div class="order-info">
-                            <span class="order-id">#ORD-9842</span>
-                            <span class="order-date">Today, 2:34 PM</span>
-                        </div>
-                        <div class="order-amount">$189.00</div>
-                        <span class="status-badge">Completed</span>
-                    </div>
-                    <div class="order-item">
-                        <div class="order-info">
-                            <span class="order-id">#ORD-9781</span>
-                            <span class="order-date">Yesterday, 11:20 AM</span>
-                        </div>
-                        <div class="order-amount">$49.99</div>
-                        <span class="status-badge">Completed</span>
-                    </div>
-                    <div class="order-item">
-                        <div class="order-info">
-                            <span class="order-id">#ORD-9712</span>
-                            <span class="order-date">Apr 12, 6:15 PM</span>
-                        </div>
-                        <div class="order-amount">$329.50</div>
-                        <span class="status-badge status-pending">Processing</span>
-                    </div>
-                    <div class="order-item">
-                        <div class="order-info">
-                            <span class="order-id">#ORD-9650</span>
-                            <span class="order-date">Apr 11, 9:42 AM</span>
-                        </div>
-                        <div class="order-amount">$78.20</div>
-                        <span class="status-badge">Completed</span>
-                    </div>
-                    <div class="order-item">
-                        <div class="order-info">
-                            <span class="order-id">#ORD-9593</span>
-                            <span class="order-date">Apr 10, 3:07 PM</span>
-                        </div>
-                        <div class="order-amount">$1,245.00</div>
-                        <span class="status-badge status-pending">Pending</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- real-time activity / recent actions -->
-            <div class="card-modern">
-                <div class="card-header">
-                    <h3><i class="ri-flashlight-line" style="margin-right: 8px;"></i> Live activity</h3>
-                    <i class="ri-more-2-fill" style="color:#94a3b8; cursor:default;"></i>
-                </div>
-                <div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="ri-shopping-bag-3-line"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>New order</strong> from alex@example.com — 2 items (Nike sneakers)</div>
-                            <div class="activity-time">5 minutes ago</div>
-                        </div>
+                <div id="ordersList"></div>
+
+
+
+                <!-- real-time activity / recent actions -->
+                <div class="card-modern">
+                    <div class="card-header">
+                        <h3><i class="ri-flashlight-line" style="margin-right: 8px;"></i> Live activity</h3>
+                        <i class="ri-more-2-fill" style="color:#94a3b8; cursor:default;"></i>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="ri-user-star-line"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Customer joined</strong> — Sarah Miller signed up for newsletter</div>
-                            <div class="activity-time">32 minutes ago</div>
+                    <!-- <div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="ri-shopping-bag-3-line"></i></div>
+                            <div>
+                                <div class="activity-text"><strong>New order</strong> from alex@example.com — 2 items
+                                    (Nike sneakers)</div>
+                                <div class="activity-time">5 minutes ago</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="ri-stack-line"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Inventory alert:</strong> “Wireless Headphones” stock below 15 units</div>
-                            <div class="activity-time">1 hour ago</div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="ri-user-star-line"></i></div>
+                            <div>
+                                <div class="activity-text"><strong>Customer joined</strong> — Sarah Miller signed up for
+                                    newsletter</div>
+                                <div class="activity-time">32 minutes ago</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="ri-chat-quote-line"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Review posted:</strong> 5 stars — “Amazing quality, fast shipping”</div>
-                            <div class="activity-time">2 hours ago</div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="ri-stack-line"></i></div>
+                            <div>
+                                <div class="activity-text"><strong>Inventory alert:</strong> “Wireless Headphones” stock
+                                    below 15 units</div>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="ri-coupon-3-line"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Promo code used:</strong> “SPRING20” — $34 discount applied</div>
-                            <div class="activity-time">3 hours ago</div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="ri-chat-quote-line"></i></div>
+                            <div>
+                                <div class="activity-text"><strong>Review posted:</strong> 5 stars — “Amazing quality,
+                                    fast shipping”</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="ri-coupon-3-line"></i></div>
+                            <div>
+                                <div class="activity-text"><strong>Promo code used:</strong> “SPRING20” — $34 discount
+                                    applied</div>
+                                <div class="activity-time">3 hours ago</div>
+                            </div>
+                        </div> -->
+                    <div id="activityList"></div>
                 </div>
                 <hr class="mt-2 mb-1">
-                <div class="text-muted-small mt-2" style="font-size:0.7rem; text-align:center;">✨ 12 new visitors in last hour</div>
+                <div class="text-muted-small mt-2" style="font-size:0.7rem; text-align:center;">✨ 12 new visitors in
+                    last hour</div>
             </div>
         </div>
 
@@ -602,17 +664,23 @@
                     <h3 style="font-size: 1rem;"><i class="ri-medal-line"></i> Top selling products</h3>
                     <a href="#" class="badge-link">Details</a>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 28px; justify-content: space-between;">
-                    <div><span style="font-weight:600;">1. Minimalist Sneakers</span><br><span class="text-muted-small">284 units sold</span></div>
-                    <div><span style="font-weight:600;">2. Smartwatch Series 5</span><br><span class="text-muted-small">197 units sold</span></div>
-                    <div><span style="font-weight:600;">3. Cotton T-shirt (pack)</span><br><span class="text-muted-small">342 units sold</span></div>
-                    <div><span style="font-weight:600;">4. Leather Backpack</span><br><span class="text-muted-small">123 units sold</span></div>
-                </div>
+                <!-- <div style="display: flex; flex-wrap: wrap; gap: 28px; justify-content: space-between;">
+                        <div><span style="font-weight:600;">1. Minimalist Sneakers</span><br><span
+                                class="text-muted-small">284 units sold</span></div>
+                        <div><span style="font-weight:600;">2. Smartwatch Series 5</span><br><span
+                                class="text-muted-small">197 units sold</span></div>
+                        <div><span style="font-weight:600;">3. Cotton T-shirt (pack)</span><br><span
+                                class="text-muted-small">342 units sold</span></div>
+                        <div><span style="font-weight:600;">4. Leather Backpack</span><br><span
+                                class="text-muted-small">123 units sold</span></div>
+                    </div> -->
+                <div id="topProducts"></div>
             </div>
         </div>
 
         <!-- subtle footer note (just for warmth) -->
-        <div style="margin-top: 40px; text-align: center; font-size: 0.7rem; color: #8b9ab0; border-top: 1px solid #eef2f8; padding-top: 24px;">
+        <div
+            style="margin-top: 40px; text-align: center; font-size: 0.7rem; color: #8b9ab0; border-top: 1px solid #eef2f8; padding-top: 24px;">
             <i class="ri-dashboard-line"></i> Eclipse Commerce — real-time overview | simple, human, effective.
         </div>
     </main>
@@ -620,11 +688,150 @@
     <!-- optional small script for tooltips or mobile detection but no heavy logic -->
     <script>
         // purely for interactive / subtle console greeting (no intrusive)
-        (function() {
+        (function () {
             console.log("✨ Eclipse Dashboard | simple & human-friendly e-commerce view");
             // Optional: if you want to add a tiny simulated 'last updated' but not needed.
             // keep design light and accessible
         })();
+        function setCurrentDate() {
+            const dateEl = document.getElementById("currentDate");
+            const today = new Date();
+
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            dateEl.textContent = today.toLocaleDateString(undefined, options);
+        }
+        setCurrentDate();
+
+
+        async function loadDashboard() {
+            try {
+                const response = await fetch("../Asset/files/data.json");
+                const data = await response.json();
+
+                renderStats(data.stats);
+                renderOrders(data.orders);
+                renderActivity(data.activity);
+            } catch (error) {
+                console.error("Failed to load dashboard data:", error);
+            }
+        }
+
+        function renderStats(stats) {
+            document.getElementById("revenue").textContent = `$${stats.revenue}`;
+            document.getElementById("orders").textContent = stats.orders;
+            document.getElementById("customers").textContent = stats.customers;
+            document.getElementById("conversion").textContent = stats.conversion + "%";
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById("ordersList");
+            container.innerHTML = "";
+
+            orders.forEach(order => {
+                const statusClass =
+                    order.status === "Completed"
+                        ? "status-badge"
+                        : "status-badge status-pending";
+
+                container.innerHTML += `
+            <div class="order-item">
+                <div class="order-info">
+                    <span class="order-id">${order.id}</span>
+                    <span class="order-date">${order.date}</span>
+                </div>
+                <div class="order-amount">$${order.amount}</div>
+                <span class="${statusClass}">${order.status}</span>
+            </div>
+        `;
+            });
+        }
+
+        function renderActivity(activity) {
+            const container = document.getElementById("activityList");
+            container.innerHTML = "";
+
+            activity.forEach(item => {
+                container.innerHTML += `
+            <div class="activity-item">
+                <div class="activity-icon"><i class="ri-flashlight-line"></i></div>
+                <div>
+                    <div class="activity-text">${item.message}</div>
+                    <div class="activity-time">${item.time}</div>
+                </div>
+            </div>
+        `;
+            });
+        }
+
+        loadDashboard();
+
+        function addActivity(message) {
+            const activityContainer = document.querySelector(".card-modern:nth-child(2) div");
+
+            const newItem = document.createElement("div");
+            newItem.classList.add("activity-item");
+
+            newItem.innerHTML = `
+        <div class="activity-icon"><i class="ri-flashlight-line"></i></div>
+        <div>
+            <div class="activity-text">${message}</div>
+            <div class="activity-time">just now</div>
+        </div>
+    `;
+
+            activityContainer.prepend(newItem);
+        }
+
+        // simulate new activity every 10 seconds
+        setInterval(() => {
+            addActivity("<strong>New order</strong> received — random user");
+        }, 10000);
+
+        const sidebar = document.querySelector(".dashboard-sidebar");
+        const toggleBtn = document.getElementById("menuToggle");
+        const backdrop = document.querySelector(".backdrop");
+
+
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+            backdrop.classList.toggle("active");
+        });
+
+        // close when clicking outside
+        backdrop.addEventListener("click", () => {
+            sidebar.classList.remove("active");
+            backdrop.classList.remove("active");
+        });
+        async function loadTopProducts() {
+            try {
+                const response = await fetch("../Asset/files/products.json");
+                const data = await response.json();
+
+                renderTopProducts(data.products);
+
+            } catch (error) {
+                console.error("Error loading products:", error);
+            }
+        }
+        function renderTopProducts(products) {
+            const container = document.getElementById("topProducts");
+            container.innerHTML = "";
+
+            products.forEach((product, index) => {
+                container.innerHTML += `
+            <div style="margin-bottom:12px;">
+                <span style="font-weight:600;">
+                    ${index + 1}. ${product.name}
+                </span><br>
+                <span style="font-size:0.75rem; color:#6b7280;">
+                    ${product.sold} units sold
+                </span>
+            </div>
+        `;
+            });
+        }
+        loadTopProducts();
     </script>
 </body>
+
 </html>

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "orders": 12,
+    "status": "Active",
+    "image": "../Asset/images/profile7.jpg"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "orders": 8,
+    "status": "Inactive",
+    "image": "../Asset/images/profile6.jpg"
+  },
+  {
+    "name": "Bob Johnson",
+    "email": "bob@example.com",
+    "orders": 20,
+    "status": "Active",
+    "image": "../Asset/images/profile3.jpg"
+  }
+]

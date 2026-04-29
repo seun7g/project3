@@ -5,448 +5,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart | FusionStore</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+
     <style>
         body {
             background: #f8fafc;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, sans-serif;
         }
-        
+
         .navbar-modern {
             background: #0f172a;
             padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         .cart-card {
             background: white;
-            border-radius: 20px;
-            transition: all 0.3s;
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 15px;
             border: 1px solid #e2e8f0;
-            margin-bottom: 1rem;
         }
-        
-        .cart-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-        
-        .cart-item-img {
+
+        .cart-img {
             width: 80px;
             height: 80px;
-            object-fit: cover;
-            border-radius: 12px;
+            object-fit: contain;
         }
-        
-        .quantity-btn {
-            background: #f1f5f9;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        
-        .quantity-btn:hover {
-            background: #0f172a;
-            color: white;
-        }
-        
-        .remove-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            font-size: 1.2rem;
-            transition: all 0.2s;
-        }
-        
-        .remove-btn:hover {
-            transform: scale(1.1);
-            color: #dc2626;
-        }
-        
-        .summary-card {
+
+        .summary {
             background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
+            padding: 20px;
+            border-radius: 18px;
             position: sticky;
             top: 20px;
             border: 1px solid #e2e8f0;
         }
-        
-        .checkout-btn {
-            background: #0f172a;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 0.8rem;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s;
-        }
-        
-        .checkout-btn:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
-        
-        .empty-cart {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .cart-item-img {
-                width: 60px;
-                height: 60px;
-            }
+
+        .btn-primary {
+            border-radius: 30px;
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar-modern">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center w-100">
-                <div>
-                    <a href="index.html" class="text-white text-decoration-none">
-                        <i class="ri-arrow-left-line"></i>
-                        <span class="ms-2">Continue Shopping</span>
-                    </a>
-                </div>
-                <div>
-                    <i class="ri-shopping-cart-line text-white fs-4"></i>
-                    <span class="text-white ms-2 fw-bold">My Cart</span>
-                </div>
+
+<!-- NAV -->
+<nav class="navbar-modern text-white d-flex justify-content-between">
+    <a href="index.html" class="text-white text-decoration-none">
+        ← Continue Shopping
+    </a>
+    <strong>My Cart</strong>
+</nav>
+
+<div class="container my-4">
+    <div class="row">
+
+        <!-- CART ITEMS -->
+        <div class="col-lg-8">
+            <div id="cart-container"></div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="col-lg-4">
+            <div class="summary">
+                <h5>Order Summary</h5>
+                <hr>
+
+                <p>Subtotal: <span id="subtotal">$0</span></p>
+                <p>Tax: <span id="tax">$0</span></p>
+                <h5>Total: <span id="total">$0</span></h5>
+
+                <button class="btn btn-primary w-100 mt-3">
+                    Checkout
+                </button>
             </div>
         </div>
-    </nav>
 
-    <div class="container my-4">
-        <div class="row g-4">
-            <!-- Cart Items -->
-            <div class="col-lg-8">
-                <div id="product-list">
-                    <!-- Cart items will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="col-lg-4">
-                <div class="summary-card">
-                    <h5 class="fw-bold mb-3">Order Summary</h5>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal</span>
-                        <span id="subtotal">$0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Shipping</span>
-                        <span id="shipping">Free</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span>Tax (10%)</span>
-                        <span id="tax">$0.00</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-3">
-                        <strong>Total</strong>
-                        <strong id="total" class="fs-5 text-primary">$0.00</strong>
-                    </div>
-                    <button class="checkout-btn" onclick="proceedToCheckout()">
-                        <i class="ri-lock-line"></i> Proceed to Checkout
-                    </button>
-                    <div class="text-center mt-3">
-                        <small class="text-muted">
-                            <i class="ri-shield-check-line"></i> Secure checkout
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        let cart = [];
-        let products = [];
-        let cartItems = [];
+<script>
+let products = [];
+let cartItems = [];
 
-        // Get products from session storage or load from JSON
-        async function loadProducts() {
-            // First try to get from session storage
-            const savedProducts = sessionStorage.getItem("fusion_products");
-            if (savedProducts) {
-                products = JSON.parse(savedProducts);
-                console.log('✅ Products loaded from session storage:', products.length);
-                initializeCart();
-                return;
-            }
+/* ================= LOAD PRODUCTS FIRST ================= */
+async function loadProducts() {
+    try {
+        const res = await fetch("Asset/files/products.json");
+        products = await res.json();
 
-            // If not in session storage, fetch from JSON
-            try {
-                const response = await fetch('Asset/files/products.json');
-                if (response.ok) {
-                    products = await response.json();
-                    sessionStorage.setItem("fusion_products", JSON.stringify(products));
-                    console.log('✅ Products loaded from JSON:', products.length);
-                    initializeCart();
-                } else {
-                    throw new Error('Failed to load products');
-                }
-            } catch (error) {
-                console.error('❌ Error loading products:', error);
-                document.getElementById('product-list').innerHTML = `
-                    <div class="empty-cart">
-                        <i class="ri-error-warning-line fs-1 text-danger"></i>
-                        <h5 class="mt-3">Failed to Load Products</h5>
-                        <p class="text-muted">Unable to load product catalog</p>
-                        <a href="index.html" class="btn btn-primary rounded-pill mt-2">Back to Home</a>
-                    </div>
-                `;
-            }
-        }
+        console.log("Products loaded:", products.length);
 
-        // Initialize cart from URL or localStorage
-        function initializeCart() {
-            // Try to get cart from URL first
-            const urlParams = new URLSearchParams(location.search);
-            const cartParam = urlParams.get('cart');
-            const idsParam = urlParams.get('ids');
-            const qParam = urlParams.get('q');
-            
-            let cartIds = [];
-            
-            if (cartParam) {
-                try {
-                    cartIds = JSON.parse(decodeURIComponent(cartParam));
-                    console.log('📦 Cart loaded from URL (JSON):', cartIds);
-                } catch (e) {
-                    console.error('Failed to parse cart param:', e);
-                }
-            } else if (idsParam) {
-                cartIds = idsParam.split(',').map(id => parseInt(id));
-                console.log('📦 Cart loaded from URL (IDs):', cartIds);
-            } else if (qParam) {
-                cartIds = qParam.split(',').map(id => parseInt(id));
-                console.log('📦 Cart loaded from URL (q param):', cartIds);
+        loadCart(); // IMPORTANT ORDER
+
+    } catch (err) {
+        console.error("Error loading products:", err);
+    }
+}
+
+/* ================= LOAD CART FROM STORAGE ================= */
+function loadCart() {
+    let cartIds = JSON.parse(localStorage.getItem("fusion_cart")) || [];
+
+    cartItems = [];
+
+    cartIds.forEach(id => {
+        const product = products.find(p => p.id === id);
+
+        if (product) {
+            let existing = cartItems.find(i => i.id === id);
+
+            if (existing) {
+                existing.qty++;
             } else {
-                // Fallback to localStorage
-                const savedCart = localStorage.getItem("fusion_cart");
-                if (savedCart) {
-                    try {
-                        cartIds = JSON.parse(savedCart);
-                        console.log('📦 Cart loaded from localStorage:', cartIds);
-                    } catch (e) {
-                        console.error('Failed to parse saved cart:', e);
-                    }
-                }
-            }
-            
-            // Remove duplicates
-            cartIds = [...new Set(cartIds)];
-            
-            // Build cart items with quantities
-            cartItems = [];
-            cartIds.forEach(id => {
-                const product = products.find(p => p.id === id);
-                if (product) {
-                    const existingItem = cartItems.find(item => item.id === id);
-                    if (existingItem) {
-                        existingItem.qty++;
-                    } else {
-                        cartItems.push({
-                            ...product,
-                            qty: 1
-                        });
-                    }
-                }
-            });
-            
-            console.log('🛒 Cart items:', cartItems);
-            renderCart();
-            calculateTotal();
-        }
-
-        // Render cart items
-        function renderCart() {
-            const productList = document.getElementById("product-list");
-            
-            if (!cartItems.length) {
-                productList.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="ri-shopping-bag-line fs-1 text-muted"></i>
-                        <h5 class="mt-3">Your cart is empty</h5>
-                        <p class="text-muted">Looks like you haven't added any items yet</p>
-                        <a href="index.html" class="btn btn-primary rounded-pill mt-2">
-                            <i class="ri-shopping-cart-line"></i> Start Shopping
-                        </a>
-                    </div>
-                `;
-                return;
-            }
-            
-            productList.innerHTML = cartItems.map(item => `
-                <div class="cart-card p-3" id="cart-item-${item.id}">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img src="${item.image}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://placehold.co/80x80?text=Product'">
-                        </div>
-                        <div class="col">
-                            <h6 class="fw-bold mb-1">${escapeHtml(item.name)}</h6>
-                            <p class="text-muted small mb-0">${getCategoryLabel(item.category)}</p>
-                            <div class="d-flex align-items-center gap-3 mt-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">
-                                        <i class="ri-subtract-line"></i>
-                                    </button>
-                                    <span class="fw-bold" id="qty-${item.id}">${item.qty}</span>
-                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
-                                        <i class="ri-add-line"></i>
-                                    </button>
-                                </div>
-                                <button class="remove-btn" onclick="removeItem(${item.id})">
-                                    <i class="ri-delete-bin-line"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-auto text-end">
-                            <h6 class="fw-bold text-primary">$${(item.price * item.qty).toFixed(2)}</h6>
-                            <small class="text-muted">$${item.price} each</small>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update item quantity
-        window.updateQuantity = function(productId, change) {
-            const itemIndex = cartItems.findIndex(item => item.id === productId);
-            if (itemIndex === -1) return;
-            
-            const newQty = cartItems[itemIndex].qty + change;
-            
-            if (newQty <= 0) {
-                removeItem(productId);
-            } else {
-                cartItems[itemIndex].qty = newQty;
-                document.getElementById(`qty-${productId}`).innerHTML = newQty;
-                calculateTotal();
-                saveCartToStorage();
-            }
-        };
-
-        // Remove item from cart
-        window.removeItem = function(productId) {
-            Swal.fire({
-                title: 'Remove Item?',
-                text: 'Are you sure you want to remove this item?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, remove',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#ef4444'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    cartItems = cartItems.filter(item => item.id !== productId);
-                    renderCart();
-                    calculateTotal();
-                    saveCartToStorage();
-                    
-                    Swal.fire({
-                        title: 'Removed!',
-                        text: 'Item has been removed from your cart.',
-                        icon: 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                }
-            });
-        };
-
-        // Calculate totals
-        function calculateTotal() {
-            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const tax = subtotal * 0.10;
-            const total = subtotal + tax;
-            
-            document.getElementById('subtotal').innerHTML = `$${subtotal.toFixed(2)}`;
-            document.getElementById('tax').innerHTML = `$${tax.toFixed(2)}`;
-            document.getElementById('total').innerHTML = `$${total.toFixed(2)}`;
-        }
-
-        // Save cart to localStorage
-        function saveCartToStorage() {
-            const cartIds = [];
-            cartItems.forEach(item => {
-                for (let i = 0; i < item.qty; i++) {
-                    cartIds.push(item.id);
-                }
-            });
-            localStorage.setItem("fusion_cart", JSON.stringify(cartIds));
-            sessionStorage.setItem("fusion_cart_items", JSON.stringify(cartItems));
-        }
-
-        // Proceed to checkout
-        window.proceedToCheckout = function() {
-            if (cartItems.length === 0) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Empty Cart',
-                    text: 'Add some items to your cart first!',
-                    confirmButtonColor: '#0f172a'
+                cartItems.push({
+                    ...product,
+                    qty: 1
                 });
-                return;
             }
-            
-            // Save cart to localStorage before proceeding
-            saveCartToStorage();
-            
-            // Encode cart items for URL
-            const cartIds = [];
-            cartItems.forEach(item => {
-                for (let i = 0; i < item.qty; i++) {
-                    cartIds.push(item.id);
-                }
-            });
-            const cartParam = encodeURIComponent(JSON.stringify(cartIds));
-            
-            // Redirect to checkout
-            window.location.href = `checkout.html?cart=${cartParam}`;
-        };
-
-        // Helper functions
-        function getCategoryLabel(category) {
-            const labels = {
-                'phones': '📱 Phones',
-                'laptops': '💻 Laptops',
-                'accessories': '🎧 Accessories',
-                'electronics': '📺 Electronics',
-                'fashion': '👕 Fashion'
-            };
-            return labels[category] || category;
         }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str).replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
+    });
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
-        });
-    </script>
+    renderCart();
+    calculateTotal();
+}
+
+/* ================= RENDER CART ================= */
+function renderCart() {
+    const container = document.getElementById("cart-container");
+
+    if (cartItems.length === 0) {
+        container.innerHTML = `
+            <div class="text-center p-5 bg-white rounded-4">
+                <h5>Your cart is empty</h5>
+                <a href="index.html" class="btn btn-primary mt-3">Go Shopping</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = cartItems.map(item => `
+        <div class="cart-card d-flex align-items-center justify-content-between">
+            
+            <img src="${item.image}" class="cart-img">
+
+            <div class="flex-grow-1 ms-3">
+                <h6>${item.name}</h6>
+                <small>$${item.price} each</small>
+            </div>
+
+            <div class="fw-bold">
+                $${(item.price * item.qty).toFixed(2)}
+            </div>
+        </div>
+    `).join('');
+}
+
+/* ================= CALCULATE TOTAL ================= */
+function calculateTotal() {
+    let subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    let tax = subtotal * 0.1;
+    let total = subtotal + tax;
+
+    document.getElementById("subtotal").innerText = `$${subtotal.toFixed(2)}`;
+    document.getElementById("tax").innerText = `$${tax.toFixed(2)}`;
+    document.getElementById("total").innerText = `$${total.toFixed(2)}`;
+}
+
+/* ================= INIT ================= */
+loadProducts();
+
+</script>
+
 </body>
-
 </html>
